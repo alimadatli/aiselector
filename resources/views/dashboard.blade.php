@@ -1,5 +1,22 @@
 <x-app-layout>
-    <div x-data="dashboard">
+    <div class="py-12" x-data="dashboard">
+        <!-- Notification -->
+        <div x-show="notification.show" 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform -translate-y-2"
+             x-transition:enter-end="opacity-100 transform translate-y-0"
+             x-transition:leave="transition ease-in duration-300"
+             x-transition:leave-start="opacity-100 transform translate-y-0"
+             x-transition:leave-end="opacity-0 transform -translate-y-2"
+             :class="notification.type === 'error' ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700'"
+             class="fixed top-4 right-4 px-4 py-3 border rounded-lg shadow-lg">
+            <div class="flex items-center">
+                <div class="py-1">
+                    <p x-text="notification.message"></p>
+                </div>
+            </div>
+        </div>
+
         <!-- Test Result Alert -->
         <div x-show="testResult !== null" 
              x-transition
@@ -154,6 +171,11 @@
                 name: '',
                 url: ''
             },
+            notification: {
+                show: false,
+                type: '',
+                message: ''
+            },
 
             async init() {
                 await this.fetchWebsites();
@@ -165,6 +187,7 @@
                     this.websites = await response.json();
                 } catch (error) {
                     console.error('Error fetching websites:', error);
+                    this.showNotification('error', 'Failed to fetch websites');
                 }
             },
 
@@ -188,9 +211,11 @@
                         await this.fetchWebsites();
                         this.showAddWebsite = false;
                         this.resetWebsiteForm();
+                        this.showNotification('success', 'Website saved successfully');
                     }
                 } catch (error) {
                     console.error('Error saving website:', error);
+                    this.showNotification('error', 'Failed to save website');
                 }
             },
 
@@ -213,9 +238,11 @@
 
                     if (response.ok) {
                         await this.fetchWebsites();
+                        this.showNotification('success', 'Website deleted successfully');
                     }
                 } catch (error) {
                     console.error('Error deleting website:', error);
+                    this.showNotification('error', 'Failed to delete website');
                 }
             },
 
@@ -227,6 +254,7 @@
                     this.showSelectors = true;
                 } catch (error) {
                     console.error('Error fetching selectors:', error);
+                    this.showNotification('error', 'Failed to fetch selectors');
                 }
             },
 
@@ -250,9 +278,11 @@
                         await this.showSelectorsModal(this.currentWebsite);
                         this.showAddSelector = false;
                         this.resetSelectorForm();
+                        this.showNotification('success', 'Selector saved successfully');
                     }
                 } catch (error) {
                     console.error('Error saving selector:', error);
+                    this.showNotification('error', 'Failed to save selector');
                 }
             },
 
@@ -275,9 +305,11 @@
 
                     if (response.ok) {
                         await this.showSelectorsModal(this.currentWebsite);
+                        this.showNotification('success', 'Selector deleted successfully');
                     }
                 } catch (error) {
                     console.error('Error deleting selector:', error);
+                    this.showNotification('error', 'Failed to delete selector');
                 }
             },
 
@@ -353,6 +385,18 @@
             toggleSelector(selector) {
                 selector.is_active = !selector.is_active;
                 this.saveSelector();
+            },
+
+            showNotification(type, message) {
+                this.notification = {
+                    show: true,
+                    type,
+                    message
+                };
+
+                setTimeout(() => {
+                    this.notification.show = false;
+                }, 5000);
             }
         }));
     });

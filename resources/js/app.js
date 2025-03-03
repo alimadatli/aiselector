@@ -13,13 +13,41 @@ document.addEventListener('alpine:init', () => {
         showSelectors: false,
         newWebsite: {
             name: '',
-            url: ''
+            url: '',
+            is_active: true
         },
         newSelector: {
             name: '',
             description: '',
             selector: '',
             is_active: true
+        },
+        notification: {
+            show: false,
+            message: '',
+            type: 'success'
+        },
+
+        showSuccess(message) {
+            this.notification = {
+                show: true,
+                message,
+                type: 'success'
+            };
+            setTimeout(() => {
+                this.notification.show = false;
+            }, 3000);
+        },
+
+        showError(message) {
+            this.notification = {
+                show: true,
+                message,
+                type: 'error'
+            };
+            setTimeout(() => {
+                this.notification.show = false;
+            }, 5000);
         },
 
         init() {

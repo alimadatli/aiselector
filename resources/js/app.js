@@ -28,6 +28,15 @@ document.addEventListener('alpine:init', () => {
             type: 'success'
         },
 
+        getHeaders() {
+            return {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            };
+        },
+
         showSuccess(message) {
             this.notification = {
                 show: true,
@@ -57,10 +66,7 @@ document.addEventListener('alpine:init', () => {
         async fetchWebsites() {
             try {
                 const response = await fetch('/api/websites', {
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
+                    headers: this.getHeaders()
                 });
 
                 if (!response.ok) {
@@ -82,7 +88,9 @@ document.addEventListener('alpine:init', () => {
 
         async fetchSelectors(websiteId) {
             try {
-                const response = await fetch(`/api/websites/${websiteId}/selectors`);
+                const response = await fetch(`/api/websites/${websiteId}/selectors`, {
+                    headers: this.getHeaders()
+                });
                 this.currentSelectors = await response.json();
             } catch (error) {
                 console.error('Error fetching selectors:', error);
@@ -94,11 +102,7 @@ document.addEventListener('alpine:init', () => {
             try {
                 const response = await fetch('/api/websites', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
+                    headers: this.getHeaders(),
                     body: JSON.stringify(this.newWebsite)
                 });
 
@@ -123,10 +127,7 @@ document.addEventListener('alpine:init', () => {
             try {
                 const response = await fetch(`/api/websites/${this.currentWebsite.id}/selectors`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    },
+                    headers: this.getHeaders(),
                     body: JSON.stringify(this.newSelector)
                 });
 
@@ -146,10 +147,7 @@ document.addEventListener('alpine:init', () => {
             try {
                 const response = await fetch(`/api/websites/${this.currentWebsite.id}/selectors/${selector.id}`, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    },
+                    headers: this.getHeaders(),
                     body: JSON.stringify({ is_active: !selector.is_active })
                 });
 

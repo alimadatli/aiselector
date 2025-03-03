@@ -28,11 +28,22 @@ document.addEventListener('alpine:init', () => {
 
         async fetchWebsites() {
             try {
-                const response = await fetch('/api/websites');
-                this.websites = await response.json();
+                const response = await fetch('/api/websites', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch websites');
+                }
+
+                const data = await response.json();
+                this.websites = data;
             } catch (error) {
                 console.error('Error fetching websites:', error);
-                this.testResult = { message: 'Error fetching websites: ' + error.message };
+                this.showError(error.message);
             }
         },
 
@@ -57,21 +68,24 @@ document.addEventListener('alpine:init', () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: JSON.stringify(this.newWebsite)
                 });
 
-                if (!response.ok) throw new Error('Failed to save website');
-                
-                const savedWebsite = await response.json();
-                this.websites.push(savedWebsite);
-                this.newWebsite = { name: '', url: '' };
-                this.showAddWebsite = false;
-                this.testResult = { message: 'Website saved successfully' };
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Failed to save website');
+                }
+
+                const website = await response.json();
+                this.websites.push(website);
+                this.newWebsite = { name: '', url: '', is_active: true };
+                this.showSuccess('Website saved successfully');
             } catch (error) {
                 console.error('Error saving website:', error);
-                this.testResult = { message: 'Error saving website: ' + error.message };
+                this.showError(error.message);
             }
         },
 

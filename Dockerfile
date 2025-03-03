@@ -27,8 +27,9 @@ WORKDIR /var/www/html
 # Copy existing application directory
 COPY . .
 
-# Create SQLite database
-RUN touch database/database.sqlite && \
+# Create SQLite database and set up environment
+RUN cp .env.example .env && \
+    touch database/database.sqlite && \
     chown -R www-data:www-data database && \
     chmod -R 775 database
 

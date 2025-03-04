@@ -37,5 +37,6 @@ npm install && npm run build
 # Ensure storage directory is writable
 chmod -R 777 storage
 chmod -R 777 bootstrap/cache
+chmod -R 777 public
 
 echo "Build process completed. Starting server..."

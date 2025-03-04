@@ -27,8 +27,5 @@ php artisan config:cache
 php artisan view:clear
 php artisan view:cache
 
-# Install NPM dependencies
-npm install
-
-# Build assets
-npm run build
+# Install NPM dependencies and build assets
+npm install && npm run build

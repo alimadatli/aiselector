@@ -4,17 +4,24 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\WebsiteController;
 use App\Http\Controllers\Api\SelectorController;
 use App\Http\Controllers\Api\ScraperController;
-use App\Http\Controllers\Api\ApiTokenController;
+use App\Http\Controllers\ApiTokenController;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
 
-// API Routes
+    // API Token Management
+    Route::get('/api-tokens', [ApiTokenController::class, 'index'])->name('api-tokens.index');
+    Route::post('/api-tokens', [ApiTokenController::class, 'create'])->name('api-tokens.create');
+    Route::delete('/api-tokens/{token}', [ApiTokenController::class, 'destroy'])->name('api-tokens.destroy');
+});
+
+// API routes
 Route::prefix('api')->group(function () {
     // Website routes
     Route::apiResource('websites', WebsiteController::class);
@@ -29,11 +36,4 @@ Route::prefix('api')->group(function () {
     // Scraper routes
     Route::post('scraper/validate', [ScraperController::class, 'validate']);
     Route::post('scraper/analyze', [ScraperController::class, 'analyze']);
-
-    // API Token Management
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/api-tokens', [ApiTokenController::class, 'index'])->name('api-tokens.index');
-        Route::post('/api-tokens', [ApiTokenController::class, 'create'])->name('api-tokens.create');
-        Route::delete('/api-tokens/{token}', [ApiTokenController::class, 'destroy'])->name('api-tokens.destroy');
-    });
 });

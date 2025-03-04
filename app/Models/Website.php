@@ -4,18 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Website extends Model
 {
     protected $fillable = [
         'name',
         'url',
-        'is_active'
+        'is_active',
+        'user_id'
     ];
 
     protected $casts = [
         'is_active' => 'boolean'
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function selectors(): HasMany
     {

@@ -7,11 +7,11 @@ use App\Http\Controllers\SelectorController;
 use App\Http\Controllers\WebsiteController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/', function () {
-        return redirect()->route('dashboard');
-    });
+Route::get('/', function () {
+    return view('welcome');
+});
 
+Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [WebsiteController::class, 'index'])->name('dashboard');
     Route::get('/websites/{website}/selectors', [WebsiteController::class, 'showSelectors'])->name('websites.selectors');
 

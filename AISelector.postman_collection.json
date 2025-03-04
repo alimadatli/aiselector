@@ -1,0 +1,206 @@
+{
+	"info": {
+		"_postman_id": "b5a2e3c4-d6f7-4e8a-9b0c-1d2e3f4a5b6c",
+		"name": "AI Selector API",
+		"description": "API collection for AI Selector web scraping management system",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Websites",
+			"item": [
+				{
+					"name": "List Websites",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{api_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/websites",
+							"host": ["{{base_url}}"],
+							"path": ["api", "websites"]
+						}
+					}
+				},
+				{
+					"name": "Create Website",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{api_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Example Website\",\n    \"url\": \"https://example.com\",\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/websites",
+							"host": ["{{base_url}}"],
+							"path": ["api", "websites"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Selectors",
+			"item": [
+				{
+					"name": "List Selectors",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{api_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/websites/{{website_id}}/selectors",
+							"host": ["{{base_url}}"],
+							"path": ["api", "websites", "{{website_id}}", "selectors"]
+						}
+					}
+				},
+				{
+					"name": "Create Selector",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{api_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Product Price\",\n    \"description\": \"Extracts the product price in USD format\",\n    \"selector\": \".price-value\",\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/websites/{{website_id}}/selectors",
+							"host": ["{{base_url}}"],
+							"path": ["api", "websites", "{{website_id}}", "selectors"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Scraper",
+			"item": [
+				{
+					"name": "Validate Data",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{api_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"website_id\": {{website_id}},\n    \"url\": \"https://example.com/product\",\n    \"data\": {\n        \"price\": \"$99.99\",\n        \"title\": \"Example Product\"\n    },\n    \"selectors_used\": {\n        \"price\": \".price-value\",\n        \"title\": \".product-title\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/scraper/validate",
+							"host": ["{{base_url}}"],
+							"path": ["api", "scraper", "validate"]
+						}
+					}
+				},
+				{
+					"name": "Analyze HTML",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{api_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"website_id\": {{website_id}},\n    \"url\": \"https://example.com/product\",\n    \"html\": \"<html>...</html>\",\n    \"failed_selectors\": [\n        {\n            \"id\": 1,\n            \"name\": \"Product Price\",\n            \"current_selector\": \".price-value\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/scraper/analyze",
+							"host": ["{{base_url}}"],
+							"path": ["api", "scraper", "analyze"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://aiselector.onrender.com",
+			"type": "string"
+		},
+		{
+			"key": "api_token",
+			"value": "your-api-token-here",
+			"type": "string"
+		},
+		{
+			"key": "website_id",
+			"value": "1",
+			"type": "string"
+		}
+	]
+}

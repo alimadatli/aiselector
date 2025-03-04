@@ -1,10 +1,16 @@
 #!/bin/bash
 
+# Copy production environment file
+cp env.production .env
+
 # Install PHP dependencies
 composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # Generate application key if not set
 php artisan key:generate --force
+
+# Create SQLite database
+touch database/database.sqlite
 
 # Run database migrations
 php artisan migrate --force

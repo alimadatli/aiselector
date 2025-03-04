@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Starting build process..."
+
 # Copy production environment file
 cp env.production .env
 
@@ -11,6 +13,7 @@ php artisan key:generate --force
 
 # Create SQLite database
 touch database/database.sqlite
+chmod 666 database/database.sqlite
 
 # Run database migrations
 php artisan migrate --force
@@ -29,3 +32,5 @@ php artisan view:cache
 
 # Install NPM dependencies and build assets
 npm install && npm run build
+
+echo "Build process completed."

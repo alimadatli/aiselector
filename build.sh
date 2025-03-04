@@ -11,9 +11,10 @@ composer install --no-interaction --prefer-dist --optimize-autoloader
 # Generate application key if not set
 php artisan key:generate --force
 
-# Create SQLite database
+# Create SQLite database directory and file
+mkdir -p database
 touch database/database.sqlite
-chmod 666 database/database.sqlite
+chmod -R 777 database
 
 # Run database migrations
 php artisan migrate --force
@@ -33,4 +34,8 @@ php artisan view:cache
 # Install NPM dependencies and build assets
 npm install && npm run build
 
-echo "Build process completed."
+# Ensure storage directory is writable
+chmod -R 777 storage
+chmod -R 777 bootstrap/cache
+
+echo "Build process completed. Starting server..."
